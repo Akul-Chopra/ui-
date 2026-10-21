@@ -1,0 +1,15 @@
+# The image is built from source: never copy local state, developer notes or machine-specific
+# settings into it (a developer's .env.local must not be baked into the bundle).
+node_modules
+dist
+*.local
+.env.local
+.env.*.local
+*.log
+*.md
+tsconfig.tsbuildinfo
+.vscode
+.idea
+.git
+.github
+.claude

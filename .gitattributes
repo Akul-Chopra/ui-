@@ -1,0 +1,10 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Binary assets — never apply EOL conversion (would corrupt byte offsets)
+*.pdf binary
+*.backup binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.docx binary

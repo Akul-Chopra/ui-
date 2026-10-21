@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+/* A soft page backdrop that the MUI Paper surfaces sit on. The values are driven by CSS
+   variables so the same rule serves both themes; the ThemeProvider sets the variables. */
+#vps-root {
+  min-height: 100vh;
+  background: var(--vps-page-bg);
+  transition: background 200ms ease;
+}
+
+/* Thin, unobtrusive scrollbars — a government console reads as more polished without the
+   default chunky ones, and they stay legible in both themes. */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--vps-scrollbar);
+  border-radius: 6px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}

@@ -1,0 +1,45 @@
+{
+  "name": "vps-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Vendor Payment System — government enterprise web client",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "build:iis": "tsc -b && vite build --mode iis",
+    "preview": "vite preview",
+    "lint": "tsc -b --noEmit"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
+    "@hookform/resolvers": "^3.10.0",
+    "@mui/icons-material": "^6.4.0",
+    "@mui/material": "^6.4.0",
+    "@mui/x-data-grid": "^7.23.0",
+    "@reduxjs/toolkit": "^2.5.0",
+    "@tanstack/react-query": "^5.62.0",
+    "axios": "^1.7.9",
+    "dayjs": "^1.11.13",
+    "framer-motion": "^11.15.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-hook-form": "^7.54.0",
+    "react-redux": "^9.2.0",
+    "react-router-dom": "^7.1.1",
+    "recharts": "^2.15.0",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  }
+}

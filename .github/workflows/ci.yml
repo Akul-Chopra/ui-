@@ -1,0 +1,37 @@
+name: CI
+
+# Type-check and build on every PR and on pushes to main.
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A newer push to the same ref cancels the in-flight run.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Typecheck & build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      # `npm run build` runs `tsc -b` (typecheck) then `vite build`.
+      - name: Typecheck & build
+        run: npm run build
+
+      # The IIS layout build (/VPS + /VPSAPI, from .env.iis) must keep building too.
+      - name: IIS build
+        run: npm run build:iis

@@ -1,0 +1,52 @@
+# ---------------------------------------------------------------------------
+# Dependencies and build output
+# ---------------------------------------------------------------------------
+node_modules/
+dist/
+dist-ssr/
+.vite/
+*.tsbuildinfo
+
+# ---------------------------------------------------------------------------
+# Machine-specific settings: .env.local (and .env.*.local) hold each developer's own values.
+# .env (shared defaults), .env.example and .env.iis hold no secrets and stay tracked.
+# ---------------------------------------------------------------------------
+*.local
+
+# ---------------------------------------------------------------------------
+# Caches, test output and package-manager leftovers
+# ---------------------------------------------------------------------------
+.npm/
+.eslintcache
+.cache/
+coverage/
+yarn.lock
+pnpm-lock.yaml
+
+# ---------------------------------------------------------------------------
+# Logs, backups, temp files and deployment packages
+# ---------------------------------------------------------------------------
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.bak
+*.tmp
+*.orig
+*.zip
+
+# ---------------------------------------------------------------------------
+# Editors and OS files
+# ---------------------------------------------------------------------------
+.vs/
+.vscode/
+.idea/
+Thumbs.db
+.DS_Store
+~$*
+
+# ---------------------------------------------------------------------------
+# Per-developer Claude Code settings (the shared .claude/launch.json stays)
+# ---------------------------------------------------------------------------
+.claude/settings.local.json
