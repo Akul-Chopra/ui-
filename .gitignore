@@ -50,3 +50,6 @@ Thumbs.db
 # Per-developer Claude Code settings (the shared .claude/launch.json stays)
 # ---------------------------------------------------------------------------
 .claude/settings.local.json
+
+# Per-machine Claude Code rules, never pushed.
+CLAUDE.local.md

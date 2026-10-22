@@ -28,6 +28,7 @@ import {
   AdminPanelSettings,
   OpenInNew,
   PlaylistAddCheck,
+  Sms,
 } from '@mui/icons-material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { navSections, type NavItem } from './navItems';
@@ -54,6 +55,7 @@ const ICONS: Record<string, React.ReactNode> = {
   OpenInNew: <OpenInNew />,
   PlaylistAddCheck: <PlaylistAddCheck />,
   AccountBalance: <AccountBalance />,
+  Sms: <Sms />,
 };
 
 export const SIDEBAR_WIDTH = 260;

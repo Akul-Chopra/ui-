@@ -5,6 +5,7 @@ import { buildTheme, themeCssVars } from '@/theme/theme';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { startupChecked } from '@/store/authSlice';
 import { useAuth } from '@/lib/useAuth';
+import { Permissions } from '@/lib/permissions';
 import { Toast } from '@/components/Toast';
 import { HomePage } from '@/pages/HomePage';
 import { LoginPage } from '@/pages/LoginPage';
@@ -27,6 +28,7 @@ import { SanctionOrderDetailPage } from '@/pages/SanctionOrderDetailPage';
 import { RuleEnginePage } from '@/pages/RuleEnginePage';
 import { WorkflowsPage } from '@/pages/WorkflowsPage';
 import { MastersPage } from '@/pages/MastersPage';
+import { SmsSettingsPage } from '@/pages/SmsSettingsPage';
 import { ReportsPage } from '@/pages/ReportsPage';
 import { AdminPage } from '@/pages/AdminPage';
 import { AuditPage } from '@/pages/AuditPage';
@@ -36,6 +38,12 @@ function RequireAuth({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, initialised } = useAuth();
   if (!initialised) return null;
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" replace />;
+}
+
+/** Sends a user without any of the permissions back to the dashboard instead of a 403. */
+function RequirePermission({ codes, children }: { codes: string[]; children: React.ReactNode }) {
+  const { can } = useAuth();
+  return can(...codes) ? <>{children}</> : <Navigate to="/dashboard" replace />;
 }
 
 export function App() {
@@ -102,6 +110,14 @@ export function App() {
                     <Route path="/config/rules" element={<RuleEnginePage />} />
                     <Route path="/config/workflows" element={<WorkflowsPage />} />
                     <Route path="/config/masters" element={<MastersPage />} />
+                    <Route
+                      path="/config/sms"
+                      element={
+                        <RequirePermission codes={[Permissions.smsManage]}>
+                          <SmsSettingsPage />
+                        </RequirePermission>
+                      }
+                    />
                     <Route path="/reports" element={<ReportsPage />} />
                     <Route path="/admin" element={<AdminPage />} />
                     <Route path="/audit" element={<AuditPage />} />

@@ -1355,3 +1355,67 @@ export interface AuditEntry {
   timestamp: string;
   changes: { field: string; oldValue?: string; newValue?: string }[];
 }
+
+/** MSDG gateway status as the server reports it. Never contains a credential. */
+export interface SmsGatewayStatus {
+  enabled: boolean;
+  endpoint: string;
+  senderId?: string | null;
+  usernameConfigured: boolean;
+  passwordConfigured: boolean;
+  secureKeyConfigured: boolean;
+}
+
+export interface SmsTemplate {
+  code: string;
+  name: string;
+  body: string;
+  variables: string[];
+  dltTemplateId?: string | null;
+  isOtp: boolean;
+  isActive: boolean;
+  modifiedOn?: string | null;
+}
+
+export interface SmsEvent {
+  code: string;
+  name: string;
+  description?: string | null;
+  module: string;
+  templateCode: string;
+  templateName: string;
+  recipientDescription: string;
+  isEnabled: boolean;
+  /** False when the template is inactive or has no DLT id, so nothing would be sent. */
+  isDeliverable: boolean;
+  modifiedOn?: string | null;
+}
+
+export interface SmsSettings {
+  gateway: SmsGatewayStatus;
+  templates: SmsTemplate[];
+  events: SmsEvent[];
+}
+
+export interface SmsLogEntry {
+  id: string;
+  createdOn: string;
+  organisation?: string | null;
+  eventCode?: string | null;
+  maskedMobile: string;
+  message: string;
+  status: 'Queued' | 'Sent' | 'Failed' | 'Read';
+  attempts: number;
+  sentOn?: string | null;
+  providerMessageId?: string | null;
+  failureReason?: string | null;
+}
+
+export interface SendTestSmsResult {
+  succeeded: boolean;
+  simulated: boolean;
+  responseCode?: string | null;
+  providerMessageId?: string | null;
+  message: string;
+  renderedText?: string | null;
+}

@@ -35,6 +35,9 @@ import type {
   PagedResult,
   PaymentQueueItem,
   SanctionCandidate,
+  SendTestSmsResult,
+  SmsLogEntry,
+  SmsSettings,
   SanctionOrderDetail,
   SanctionOrderListItem,
   SanctionOrderPreview,
@@ -275,6 +278,19 @@ export const mastersApi = {
     api.put<string>(`${V1}/config/masters`, body).then((r) => r.data),
   remove: (type: MasterType, id: string) =>
     api.delete(`${V1}/config/masters/${id}`, { params: { type } }).then((r) => r.data),
+};
+
+/** Super Admin SMS configuration (MSDG): templates, event switches, test send and log. */
+export const smsApi = {
+  settings: () => api.get<SmsSettings>(`${V1}/config/sms`).then((r) => r.data),
+  updateTemplate: (code: string, body: { dltTemplateId?: string | null; isActive: boolean }) =>
+    api.put(`${V1}/config/sms/templates/${encodeURIComponent(code)}`, body).then((r) => r.data),
+  updateEvent: (code: string, isEnabled: boolean) =>
+    api.put(`${V1}/config/sms/events/${encodeURIComponent(code)}`, { isEnabled }).then((r) => r.data),
+  sendTest: (body: { mobile: string; templateCode: string; values: Record<string, string> }) =>
+    api.post<SendTestSmsResult>(`${V1}/config/sms/test`, body).then((r) => r.data),
+  log: (take = 50) =>
+    api.get<SmsLogEntry[]>(`${V1}/config/sms/log`, { params: { take } }).then((r) => r.data),
 };
 
 /** Advanced-search filters shared by the personal and org-wide approval inboxes. */

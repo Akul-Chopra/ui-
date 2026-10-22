@@ -123,6 +123,8 @@ export const navSections: NavSection[] = [
         icon: 'AdminPanelSettings',
         permissions: [Permissions.userView, Permissions.roleView],
       },
+      // Platform-wide (sender id, DLT templates), so only the Super Admin holds this.
+      { label: 'SMS Notifications', route: '/config/sms', icon: 'Sms', permissions: [Permissions.smsManage] },
     ],
   },
 ];
