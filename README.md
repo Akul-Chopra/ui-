@@ -162,21 +162,17 @@ docker run -d -p 3000:80 -e VPS_API_UPSTREAM=http://<api-host>:8080 vps-web
 
 ## Documentation
 
+Start at **[docs/README.md](docs/README.md)**. In short:
+
 | File | Contents |
 | --- | --- |
 | `CONTRIBUTING.md` | Branch and pull-request workflow |
-| `docs/FUNCTIONALITY.md` | Every module, screen and route of the application |
-| `docs/CODING_STANDARDS.md` | Conventions (see the "Frontend" section) |
-| `docs/DEMO_SCRIPT.md` | Demo walkthrough and demo accounts |
-| `docs/VPMS_GAP_ANALYSIS.md` | Gap analysis against the proposed VPMS |
-| `docs/NGPS_FRONTEND.md` | NGPS screens, API calls and UI rules in this app |
-| `docs/NGPS_SSO_Integration.md`, `docs/NGPS_SSO_Plan.md` | Pay via NGPS single sign-on (record of the feature as built) |
+| `CHANGELOG.md` | Changes to the web app |
+| `docs/ngps-frontend.md` | NGPS screens, API calls and UI rules in this app |
 
-The NGPS integration's working context (requirement, NGPS rules, decisions, open issues, status) is kept
-in one place only: `NGPS_INTEGRATION_CONTEXT.md` in the VPS (API) repository. Read it before NGPS work.
-
-The functional and SSO documents were copied from the VPS repository and cover the API as well; paths in
-them such as `frontend/src/...` refer to the old layout, where this repository was the `frontend/` folder.
+What the system does, coding standards (see their "Frontend" section), the demo script, NGPS and
+deployment are documented once, in the VPS (API) repository under `docs/` — `docs/README.md` here
+lists them. The NGPS working context is `docs/integrations/ngps.md` there; read it before NGPS work.
 
 ## Developer documents are never served
 

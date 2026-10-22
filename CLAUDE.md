@@ -33,18 +33,19 @@ adds the rules that are easy to get wrong.
 
 ## Docs
 
-- `CONTRIBUTING.md`: branch and PR workflow (base branch `main`).
-- `docs/FUNCTIONALITY.md`: every module and route; `docs/CODING_STANDARDS.md` ("Frontend" section);
-  `docs/DEMO_SCRIPT.md`; `docs/VPMS_GAP_ANALYSIS.md`.
-- NGPS: `docs/NGPS_FRONTEND.md` (this app's side), `docs/NGPS_SSO_Integration.md`,
-  `docs/NGPS_SSO_Plan.md`. The copied docs describe the API side too; paths such as `src/...` or
-  `frontend/...` in them refer to the VPS repository layout (`frontend/` is now this repository's root).
+- Index: `docs/README.md`. `CONTRIBUTING.md`: branch and PR workflow (base branch `main`).
+  `CHANGELOG.md`: add a line in the same change.
+- This repository keeps only web-app docs (`docs/ngps-frontend.md` for NGPS screens). Shared docs live
+  once in the VPS repository (`C:\Workspace\VPS`) under `docs/`: `product/functionality.md` (every
+  module and route), `architecture/coding-standards.md` ("Frontend" section), `product/demo-script.md`,
+  `product/gap-analysis.md`, `integrations/ngps-sso.md`, `operations/deployment-iis.md`. Link to them;
+  never copy them here.
 
 ## NGPS screens
 
-Before any NGPS work (Pay via NGPS, Sanction Order pages), read `docs/NGPS_FRONTEND.md` and the working
-context `NGPS_INTEGRATION_CONTEXT.md` in the VPS repository (`C:\Workspace\VPS` locally), which is the
-single source for the integration. Update that file there, never copy it here; update
-`docs/NGPS_FRONTEND.md` only for screens, routes, API calls or UI rules. Sanction Order pages
+Before any NGPS work (Pay via NGPS, Sanction Order pages), read `docs/ngps-frontend.md` and the working
+context `docs/integrations/ngps.md` in the VPS repository (`C:\Workspace\VPS` locally; formerly
+`NGPS_INTEGRATION_CONTEXT.md`), which is the single source for the integration. Update that file there,
+never copy it here; update `docs/ngps-frontend.md` only for screens, routes, API calls or UI rules. Sanction Order pages
 (`SanctionOrder*Page.tsx`, `NgpsStatusChip.tsx`) show one "Status" only, never a separate VPS or NGPS
 status.

@@ -2,7 +2,7 @@
 
 What the web app owns of the NGPS integration (Pay via NGPS and Sanction Orders). Everything else — the
 requirement, the NGPS document's rules (§ numbers), the API and database design, decisions, open issues
-and status — is in **`NGPS_INTEGRATION_CONTEXT.md` in the VPS (API) repository**. That file is the single
+and status — is in **`docs/integrations/ngps.md` in the VPS (API) repository** (formerly `NGPS_INTEGRATION_CONTEXT.md`). That file is the single
 source; read it before NGPS work and update it there. This file only lists the frontend side, so the two
 never repeat each other.
 
