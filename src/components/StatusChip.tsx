@@ -1,4 +1,4 @@
-import { Chip } from '@mui/material';
+import { Chip, type SxProps, type Theme } from '@mui/material';
 import { toneToChipColor } from '@/theme/theme';
 
 // Maps a raw status enum name (as the list endpoints return it, e.g. "UnderTechnicalReview")
@@ -45,10 +45,12 @@ export function StatusChip({
   status,
   tone,
   size = 'small',
+  sx,
 }: {
   status: string;
   tone?: string;
   size?: 'small' | 'medium';
+  sx?: SxProps<Theme>;
 }) {
   const resolvedTone = tone ?? TONES[status] ?? 'neutral';
   return (
@@ -57,6 +59,7 @@ export function StatusChip({
       color={toneToChipColor(resolvedTone)}
       size={size}
       variant={resolvedTone === 'neutral' ? 'outlined' : 'filled'}
+      sx={sx}
     />
   );
 }

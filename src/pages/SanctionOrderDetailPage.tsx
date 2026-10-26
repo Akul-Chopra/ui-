@@ -28,7 +28,9 @@ import { AccountBalance, ArrowBack, Block, OpenInNew, Refresh, Replay } from '@m
 import { PageHeader } from '@/components/PageHeader';
 import { StatusChip } from '@/components/StatusChip';
 import { SanctionOrderStatusChip, sanctionOrderStatus } from '@/components/NgpsStatusChip';
-import { NgpsSsoDialog } from '@/components/NgpsSsoDialog';
+import { useNgpsSso } from '@/lib/useNgpsSso';
+import { BeneficiaryCell, BENEFICIARY_HEADER } from '@/components/BeneficiaryCell';
+import { useIsNgpsLinked } from '@/lib/useIsNgpsLinked';
 import { ngpsSanctionOrdersApi } from '@/api/endpoints';
 import { errorMessage } from '@/api/client';
 import type { SanctionOrderLine } from '@/api/types';
@@ -97,7 +99,8 @@ export function SanctionOrderDetailPage() {
   const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
   const { can } = useAuth();
-  const [ssoOpen, setSsoOpen] = useState(false);
+  const ngpsSso = useNgpsSso();
+  const isNgpsLinked = useIsNgpsLinked();
   const [cancelOpen, setCancelOpen] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
 
@@ -180,7 +183,7 @@ export function SanctionOrderDetailPage() {
     <>
       <PageHeader
         title={`Sanction Order ${o.sanctionOrderNo}`}
-        subtitle={o.description || 'NGPS Sanction Order'}
+        subtitle={o.description || 'Sanction Order'}
         icon={<AccountBalance />}
         actions={
           <>
@@ -202,8 +205,13 @@ export function SanctionOrderDetailPage() {
                 {sync.isPending ? 'Refreshing…' : 'Refresh status'}
               </Button>
             )}
-            {o.state === 'Accepted' && can(Permissions.paymentRecord) && (
-              <Button variant="contained" startIcon={<OpenInNew />} onClick={() => setSsoOpen(true)}>
+            {o.state === 'Accepted' && isNgpsLinked && (
+              <Button
+                variant="contained"
+                startIcon={ngpsSso.busy ? <CircularProgress size={16} color="inherit" /> : <OpenInNew />}
+                disabled={ngpsSso.busy}
+                onClick={ngpsSso.start}
+              >
                 Sign in NGPS
               </Button>
             )}
@@ -280,7 +288,7 @@ export function SanctionOrderDetailPage() {
               <TableRow>
                 <TableCell sx={{ fontWeight: 700 }}>#</TableCell>
                 <TableCell sx={{ fontWeight: 700 }}>Reference / Invoice</TableCell>
-                <TableCell sx={{ fontWeight: 700 }}>Beneficiary</TableCell>
+                <TableCell sx={{ fontWeight: 700 }}>{BENEFICIARY_HEADER}</TableCell>
                 <TableCell sx={{ fontWeight: 700 }} align="right">
                   Amount
                 </TableCell>
@@ -301,10 +309,12 @@ export function SanctionOrderDetailPage() {
                     </Typography>
                   </TableCell>
                   <TableCell>
-                    <Typography variant="body2">{l.beneficiaryName}</Typography>
-                    <Typography variant="caption" color="text.secondary">
-                      {l.accountNumberMasked} · {l.ifscCode}
-                    </Typography>
+                    <BeneficiaryCell
+                      beneficiaryName={l.beneficiaryName}
+                      vendorName={l.vendorName}
+                      accountNumberMasked={l.accountNumberMasked}
+                      ifsc={l.ifscCode}
+                    />
                   </TableCell>
                   <TableCell align="right">{currency(l.amount)}</TableCell>
                   <TableCell>
@@ -363,7 +373,6 @@ export function SanctionOrderDetailPage() {
           </Button>
         </DialogActions>
       </Dialog>
-      <NgpsSsoDialog open={ssoOpen} onClose={() => setSsoOpen(false)} />
     </>
   );
 }

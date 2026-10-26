@@ -48,7 +48,19 @@ const STATUS_COLOR: Record<string, 'success' | 'error' | 'warning' | 'info' | 'd
  * decided, and where it is pending now. This is the transparency surface: instead of a bare
  * "Pending Approval" status, a user sees "pending at Scrutiny with the Contract Officer".
  */
-export function WorkflowProgress({ entityType, entityId }: { entityType: string; entityId: string }) {
+export function WorkflowProgress({
+  entityType,
+  entityId,
+  continuation,
+  stepExtras,
+}: {
+  entityType: string;
+  entityId: string;
+  /** Further stages drawn on the same rail after the last approval level (e.g. an invoice's payment). */
+  continuation?: React.ReactNode;
+  /** Extra content under a level, by step number (e.g. the history events of that level). */
+  stepExtras?: Record<number, React.ReactNode>;
+}) {
   const { can } = useAuth();
   const canReassign = can(Permissions.workflowUpdate);
   const [reassign, setReassign] = useState<{ taskId: string; stepName: string } | null>(null);
@@ -68,9 +80,12 @@ export function WorkflowProgress({ entityType, entityId }: { entityType: string;
 
   if (!data || !data.hasWorkflow) {
     return (
-      <Alert severity="info" variant="outlined">
-        {data?.summary ?? 'No approval is running for this document.'}
-      </Alert>
+      <Stack spacing={1.5}>
+        <Alert severity="info" variant="outlined">
+          {data?.summary ?? 'No approval is running for this document.'}
+        </Alert>
+        {continuation && <Stack spacing={0}>{continuation}</Stack>}
+      </Stack>
     );
   }
 
@@ -104,7 +119,8 @@ export function WorkflowProgress({ entityType, entityId }: { entityType: string;
           <StepRow
             key={step.stepNumber}
             step={step}
-            isLast={i === data.steps.length - 1}
+            isLast={!continuation && i === data.steps.length - 1}
+            extra={stepExtras?.[step.stepNumber]}
             onReassign={
               canReassign && step.isCurrent && step.taskId
                 ? () => setReassign({ taskId: step.taskId!, stepName: step.stepName })
@@ -112,6 +128,7 @@ export function WorkflowProgress({ entityType, entityId }: { entityType: string;
             }
           />
         ))}
+        {continuation}
       </Stack>
 
       {reassign && (
@@ -131,10 +148,12 @@ function StepRow({
   step,
   isLast,
   onReassign,
+  extra,
 }: {
   step: WorkflowStepProgress;
   isLast: boolean;
   onReassign?: () => void;
+  extra?: React.ReactNode;
 }) {
   const { icon, tint } = statusVisual(step);
 
@@ -189,6 +208,7 @@ function StepRow({
             “{step.remarks}”
           </Typography>
         )}
+        {extra}
       </Box>
     </Stack>
   );

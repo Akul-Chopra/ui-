@@ -38,7 +38,6 @@ export const Permissions = {
   invoiceUpdate: 'invoice.update',
   paymentView: 'payment.view',
   paymentQueueView: 'payment.queue.view',
-  paymentRecord: 'payment.record',
   paymentNgpsPrepare: 'payment.ngps.prepare',
   paymentNgpsView: 'payment.ngps.view',
   ruleView: 'rule.view',

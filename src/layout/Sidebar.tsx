@@ -8,20 +8,17 @@ import {
   Box,
   Toolbar,
 } from '@mui/material';
-import { useState } from 'react';
 import {
   Dashboard,
   Store,
   Description,
   Assignment,
   ReceiptLong,
-  Payments,
   Rule,
   AccountTree,
   History,
   FactCheck,
   AccountBalance,
-  PriceCheck,
   ManageAccounts,
   Category,
   Assessment,
@@ -34,7 +31,8 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { navSections, type NavItem } from './navItems';
 import { useAuth } from '@/lib/useAuth';
 import { useIsNgpsSignatory } from '@/lib/useIsNgpsSignatory';
-import { NgpsSsoDialog } from '@/components/NgpsSsoDialog';
+import { useIsNgpsLinked } from '@/lib/useIsNgpsLinked';
+import { useNgpsSso } from '@/lib/useNgpsSso';
 
 const ICONS: Record<string, React.ReactNode> = {
   Dashboard: <Dashboard />,
@@ -42,8 +40,6 @@ const ICONS: Record<string, React.ReactNode> = {
   Description: <Description />,
   Assignment: <Assignment />,
   ReceiptLong: <ReceiptLong />,
-  Payments: <Payments />,
-  PriceCheck: <PriceCheck />,
   Rule: <Rule />,
   AccountTree: <AccountTree />,
   History: <History />,
@@ -65,12 +61,12 @@ export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: ()
   const navigate = useNavigate();
   const { can, user, isVendor } = useAuth();
   const isNgpsSignatory = useIsNgpsSignatory();
-  // Leaving VPS for NGPS is never a single click: the item opens a confirmation first.
-  const [ngpsOpen, setNgpsOpen] = useState(false);
+  const isNgpsLinked = useIsNgpsLinked();
+  const ngpsSso = useNgpsSso();
 
   const go = (item: NavItem) => {
     if (item.ngpsSso) {
-      setNgpsOpen(true);
+      ngpsSso.start();
       return;
     }
     navigate(item.route);
@@ -112,6 +108,7 @@ export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: ()
             if (item.vendorOnly && !isVendor) return false;
             if (item.hideForVendor && isVendor) return false;
             if (item.ngpsSignatory && !isNgpsSignatory) return false;
+            if (item.ngpsSso && !isNgpsLinked) return false;
             return item.permissions.length === 0 || can(...item.permissions);
           });
           if (visible.length === 0) return null;
@@ -133,6 +130,7 @@ export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: ()
                     <ListItemButton
                       key={item.route}
                       selected={active}
+                      disabled={item.ngpsSso && ngpsSso.busy}
                       onClick={() => go(item)}
                       sx={{
                         borderRadius: 2,
@@ -166,7 +164,6 @@ export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: ()
 
   return (
     <>
-      <NgpsSsoDialog open={ngpsOpen} onClose={() => setNgpsOpen(false)} />
       <Drawer
         variant={variant}
         open={open}

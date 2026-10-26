@@ -62,7 +62,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
 // are actioned from their dedicated screens; the inbox routes there rather than acting inline.
 const ROUTED_ELSEWHERE: Record<string, { label: string; route: string }> = {
   Invoice: { label: 'Review in Invoices', route: '/invoices' },
-  Payment: { label: 'Review in Payment Queue', route: '/finance/queue' },
+  Payment: { label: 'Review in Payment Queue', route: '/reports?tab=payment-queue' },
 };
 
 // Document-type quick filter. "Other" is everything that is not one of the three headline

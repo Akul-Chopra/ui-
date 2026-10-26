@@ -1,7 +1,9 @@
 import { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import {
   Assessment,
+  Payments,
   Groups,
   EventBusy,
   AccountBalanceWallet,
@@ -42,6 +44,8 @@ import { reportsApi } from '@/api/endpoints';
 import type { PaymentSummaryGrouping } from '@/api/types';
 import { compactCurrency, currency, number as fmtNumber, date as fmtDate } from '@/lib/format';
 import { useAuth } from '@/lib/useAuth';
+import { Permissions } from '@/lib/permissions';
+import { PaymentQueueTable } from '@/components/PaymentQueueTable';
 
 /** A thin wrapper that shows a spinner while loading and an empty note when there are no rows. */
 function ReportBody({
@@ -960,30 +964,43 @@ function TopVendorsReport() {
 
 // ---- Page ------------------------------------------------------------------
 
-const REPORTS = [
-  { label: 'Officer scorecard', icon: <MilitaryTech fontSize="small" />, render: () => <OfficerScorecardReport /> },
-  { label: 'Workload', icon: <Inventory fontSize="small" />, render: () => <OfficerWorkloadReport /> },
-  { label: 'Responsiveness', icon: <Speed fontSize="small" />, render: () => <OfficerResponsivenessReport /> },
-  { label: 'Approval performance', icon: <Groups fontSize="small" />, render: () => <ApprovalPerformanceReport /> },
-  { label: 'Contract expiry', icon: <EventBusy fontSize="small" />, render: () => <ContractExpiryReport /> },
+const REPORTS: { key: string; label: string; icon: React.ReactElement; render: () => React.ReactNode; permission?: string }[] = [
+  // Moved here from its own menu item (26 Oct 2026); needs the queue permission, not just report.view.
   {
+    key: 'payment-queue',
+    label: 'Payment queue',
+    icon: <Payments fontSize="small" />,
+    render: () => <PaymentQueueTable />,
+    permission: Permissions.paymentQueueView,
+  },
+  { key: 'officer-scorecard', label: 'Officer scorecard', icon: <MilitaryTech fontSize="small" />, render: () => <OfficerScorecardReport /> },
+  { key: 'workload', label: 'Workload', icon: <Inventory fontSize="small" />, render: () => <OfficerWorkloadReport /> },
+  { key: 'responsiveness', label: 'Responsiveness', icon: <Speed fontSize="small" />, render: () => <OfficerResponsivenessReport /> },
+  { key: 'approval-performance', label: 'Approval performance', icon: <Groups fontSize="small" />, render: () => <ApprovalPerformanceReport /> },
+  { key: 'contract-expiry', label: 'Contract expiry', icon: <EventBusy fontSize="small" />, render: () => <ContractExpiryReport /> },
+  {
+    key: 'payment-summary',
     label: 'Payment summary',
     icon: <AccountBalanceWallet fontSize="small" />,
     render: () => <PaymentSummaryReportView />,
   },
-  { label: 'Ageing', icon: <HourglassBottom fontSize="small" />, render: () => <AgeingReportView /> },
-  { label: 'Tax & deductions', icon: <ReceiptLong fontSize="small" />, render: () => <TaxDeductionReportView /> },
-  { label: 'Vendor summary', icon: <Store fontSize="small" />, render: () => <VendorSummaryReport /> },
-  { label: 'Top vendors', icon: <EmojiEvents fontSize="small" />, render: () => <TopVendorsReport /> },
+  { key: 'ageing', label: 'Ageing', icon: <HourglassBottom fontSize="small" />, render: () => <AgeingReportView /> },
+  { key: 'tax-deductions', label: 'Tax & deductions', icon: <ReceiptLong fontSize="small" />, render: () => <TaxDeductionReportView /> },
+  { key: 'vendor-summary', label: 'Vendor summary', icon: <Store fontSize="small" />, render: () => <VendorSummaryReport /> },
+  { key: 'top-vendors', label: 'Top vendors', icon: <EmojiEvents fontSize="small" />, render: () => <TopVendorsReport /> },
 ];
 
 export function ReportsPage() {
-  const { isVendor } = useAuth();
-  const [tab, setTab] = useState(0);
+  const { isVendor, can } = useAuth();
+  // `?tab=<key>` opens a tab directly (e.g. /reports?tab=payment-queue from the old Payment Queue links).
+  const [searchParams, setSearchParams] = useSearchParams();
   // Vendors get a self-service report set scoped to their own records; officers get the
   // operational and financial reports across the organisation.
-  const reports = isVendor ? VENDOR_REPORTS : REPORTS;
-  const active = reports[Math.min(tab, reports.length - 1)];
+  const reports = isVendor ? VENDOR_REPORTS : REPORTS.filter((r) => !r.permission || can(r.permission));
+  const requested = reports.findIndex((r) => 'key' in r && r.key === searchParams.get('tab'));
+  const [chosen, setTab] = useState(0);
+  const tab = Math.min(requested >= 0 ? requested : chosen, reports.length - 1);
+  const active = reports[tab];
   return (
     <>
       <PageHeader
@@ -997,8 +1014,11 @@ export function ReportsPage() {
       />
       <Card variant="outlined">
         <Tabs
-          value={Math.min(tab, reports.length - 1)}
-          onChange={(_, v) => setTab(v)}
+          value={tab}
+          onChange={(_, v) => {
+            setTab(v);
+            if (searchParams.has('tab')) setSearchParams({}, { replace: true });
+          }}
           variant="scrollable"
           scrollButtons="auto"
           sx={{ borderBottom: 1, borderColor: 'divider', px: 1 }}

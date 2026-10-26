@@ -10,9 +10,9 @@ never repeat each other.
 
 | Screen | Route | File |
 | --- | --- | --- |
-| Pay via NGPS (sidebar item, opens a dialog, then redirects to NGPS) | — | `src/components/NgpsSsoDialog.tsx` |
-| Prepare NGPS Order (pick invoices, preview, send) | `/finance/ngps/prepare` | `src/pages/SanctionOrderPreparationPage.tsx`, `src/components/SanctionOrderSubmitDialog.tsx` |
-| NGPS Sanction Orders (list) | `/finance/ngps/sanction-orders` | `src/pages/SanctionOrdersPage.tsx` |
+| Process Payment Order (sidebar item, was "Pay via NGPS"; also "Sign in NGPS" on an accepted Sanction Order) — redirects to NGPS on click, no confirmation; errors as a toast | — | `src/lib/useNgpsSso.ts` |
+| Prepare Sanction Order (pick invoices, preview, send) | `/finance/ngps/prepare` | `src/pages/SanctionOrderPreparationPage.tsx`, `src/components/SanctionOrderSubmitDialog.tsx` |
+| Sanction Orders (list; was "NGPS Sanction Orders") | `/finance/ngps/sanction-orders` | `src/pages/SanctionOrdersPage.tsx` |
 | Sanction Order detail (Refresh status, Retry, Cancel) | `/finance/ngps/sanction-orders/:id` | `src/pages/SanctionOrderDetailPage.tsx` |
 | Status chip used by the list and the detail page | — | `src/components/NgpsStatusChip.tsx` |
 
@@ -25,6 +25,7 @@ All in `src/api/endpoints.ts`, types in `src/api/types.ts`:
 
 | Function | Endpoint |
 | --- | --- |
+| `paymentsApi.ngpsLink()` | `GET /api/v1/payments/ngps-link` → `{ isLinked }` (used by `src/lib/useIsNgpsLinked.ts`) |
 | `paymentsApi.ngpsSso()` | `POST /api/v1/payments/ngps-sso` → `{ redirectUrl }` |
 | `ngpsSanctionOrdersApi.setup()` | `GET /api/v1/ngps-sanction-orders/setup` (includes `isSignatory`) |
 | `ngpsSanctionOrdersApi.candidates(params)` | `GET /api/v1/ngps-sanction-orders/candidates` |
@@ -37,10 +38,12 @@ All in `src/api/endpoints.ts`, types in `src/api/types.ts`:
 
 - **Who sees what.** The Sanction Order menu items show only for NGPS signatories (Maker / Checker):
   `src/lib/useIsNgpsSignatory.ts` asks `setup()` once per session for users with the
-  `payment.ngps.prepare` permission. "Pay via NGPS" needs the user's NGPS link on the server. The menu is
+  `payment.ngps.prepare` permission. "Pay via NGPS" (and "Sign in NGPS") show only to officers linked to an NGPS user
+  (`useIsNgpsLinked`); no permission is involved. The menu is
   a convenience: the API refuses every Sanction Order call from a non-signatory (`NGPS_NOT_SIGNATORY`).
 - **One "Status" only.** Lists and detail pages show a single Status (Pending, Rejected, Cancelled, or the
-  NGPS progress once held: Locked, Payment Order created, Signed…, Sent to bank, Paid, Partially paid,
+  NGPS progress once held: Send for Processing (accepted, no code yet), Sanction Order Processed (NGPS
+  "Locked", code 20), Payment Order created, Signed…, Sent to bank, Paid, Partially paid,
   Payment failed), built by `sanctionOrderStatus()` in `NgpsStatusChip.tsx`. Never show separate "VPS" and
   "NGPS" statuses. A line of a rejected or cancelled order reads "Not sent".
 - **Sanction date** is sent as the local date (`yyyy-MM-dd`) from the submit dialog; the API formats it for

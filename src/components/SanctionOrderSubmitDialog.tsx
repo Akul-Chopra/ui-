@@ -20,6 +20,7 @@ import {
   Typography,
 } from '@mui/material';
 import { ngpsSanctionOrdersApi } from '@/api/endpoints';
+import { BeneficiaryCell, BENEFICIARY_HEADER } from '@/components/BeneficiaryCell';
 import { errorMessage } from '@/api/client';
 import type { SanctionOrderSubmitResult } from '@/api/types';
 import { currency } from '@/lib/format';
@@ -150,8 +151,7 @@ export function SanctionOrderSubmitDialog({
                   <TableRow>
                     <TableCell sx={{ fontWeight: 700 }}>Reference</TableCell>
                     <TableCell sx={{ fontWeight: 700 }}>Invoice</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Beneficiary</TableCell>
-                    <TableCell sx={{ fontWeight: 700 }}>Account · IFSC</TableCell>
+                    <TableCell sx={{ fontWeight: 700 }}>{BENEFICIARY_HEADER}</TableCell>
                     <TableCell sx={{ fontWeight: 700 }} align="right">
                       Amount
                     </TableCell>
@@ -175,13 +175,17 @@ export function SanctionOrderSubmitDialog({
                         </Typography>
                       </TableCell>
                       <TableCell>
-                        <Typography variant="body2">{r.beneficiaryName}</Typography>
-                        <Typography variant="caption" color="text.secondary">
-                          {r.address}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {r.accountNumberMasked} · {r.ifsc}
+                        <BeneficiaryCell
+                          beneficiaryName={r.beneficiaryName}
+                          vendorName={r.vendorName}
+                          accountNumberMasked={r.accountNumberMasked}
+                          ifsc={r.ifsc}
+                        />
+                        {r.address && (
+                          <Typography variant="caption" color="text.secondary" component="div">
+                            {r.address}
+                          </Typography>
+                        )}
                       </TableCell>
                       <TableCell align="right">{currency(r.amount)}</TableCell>
                       <TableCell>

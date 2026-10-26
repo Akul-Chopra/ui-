@@ -23,7 +23,7 @@ import type {
   InvoiceDetail,
   InvoiceReviewContext,
   InvoicePayment,
-  RecordPaymentBody,
+  InvoiceLifecycle,
   InvoiceListItem,
   LoginRequest,
   Lookups,
@@ -745,8 +745,9 @@ export const invoicesApi = {
     api.get<InvoiceReviewContext>(`${V1}/invoices/${id}/review-context`).then((r) => r.data),
   payments: (id: string) =>
     api.get<InvoicePayment[]>(`${V1}/invoices/${id}/payments`).then((r) => r.data),
-  recordPayment: (id: string, body: RecordPaymentBody) =>
-    api.post(`${V1}/invoices/${id}/record-payment`, body).then((r) => r.data),
+  /** Approval → settlement → Sanction Order → Payment Order → disbursement → payment → UTR. */
+  lifecycle: (id: string) =>
+    api.get<InvoiceLifecycle>(`${V1}/invoices/${id}/lifecycle`).then((r) => r.data),
   submit: (body: SubmitInvoiceBody) =>
     api.post<SubmitInvoiceResult>(`${V1}/invoices`, body).then((r) => r.data),
   review: (id: string, body: unknown) =>
@@ -766,7 +767,9 @@ export interface ResubmitInvoiceBody {
 }
 
 export const paymentsApi = {
-  /** Fresh NGPS sign-in URL for the current officer ("Pay via NGPS"); minted server-side per click. */
+  /** Whether the current officer is linked to an NGPS user; decides whether "Process Payment Order" is shown. */
+  ngpsLink: () => api.get<{ isLinked: boolean }>(`${V1}/payments/ngps-link`).then((r) => r.data),
+  /** Fresh NGPS sign-in URL for the current officer ("Process Payment Order"); minted server-side per click. */
   ngpsSso: () => api.post<{ redirectUrl: string }>(`${V1}/payments/ngps-sso`).then((r) => r.data),
   queue: (params: ListParams) =>
     api.get<PagedResult<PaymentQueueItem>>(`${V1}/payments/queue${qs(params)}`).then((r) => r.data),

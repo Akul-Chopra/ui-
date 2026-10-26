@@ -1,8 +1,8 @@
-import { Payments, Verified, Warning } from '@mui/icons-material';
+import { Verified, Warning } from '@mui/icons-material';
 import { Stack, Typography, Chip } from '@mui/material';
-import { PageHeader } from '@/components/PageHeader';
 import { DataTable, type Column } from '@/components/DataTable';
 import { StatusChip } from '@/components/StatusChip';
+import { BeneficiaryCell, BENEFICIARY_HEADER } from '@/components/BeneficiaryCell';
 import { paymentsApi } from '@/api/endpoints';
 import type { PaymentQueueItem } from '@/api/types';
 import { compactCurrency } from '@/lib/format';
@@ -20,6 +20,18 @@ const columns: Column<PaymentQueueItem>[] = [
           {p.vendorName} · {p.vendorCode}
         </Typography>
       </Stack>
+    ),
+  },
+  {
+    key: 'beneficiary',
+    header: BENEFICIARY_HEADER,
+    render: (p) => (
+      <BeneficiaryCell
+        beneficiaryName={p.beneficiaryName}
+        vendorName={p.vendorName}
+        accountNumberMasked={p.accountNumberMasked}
+        ifsc={p.ifsc}
+      />
     ),
   },
   { key: 'departmentName', header: 'Department' },
@@ -70,14 +82,13 @@ const columns: Column<PaymentQueueItem>[] = [
   },
 ];
 
-export function PaymentQueuePage() {
+/** Finance-settled invoices awaiting disbursement, oldest first. Shown as the first Reports tab. */
+export function PaymentQueueTable() {
   return (
-    <>
-      <PageHeader
-        title="Payment Queue"
-        subtitle="Finance-settled invoices awaiting disbursement, oldest first"
-        icon={<Payments />}
-      />
+    <Stack spacing={2}>
+      <Typography variant="body2" color="text.secondary">
+        Finance-settled invoices awaiting disbursement, oldest first.
+      </Typography>
       <DataTable
         queryKey={['payment-queue']}
         fetcher={paymentsApi.queue}
@@ -85,6 +96,6 @@ export function PaymentQueuePage() {
         rowKey={(p) => p.invoiceId}
         searchPlaceholder="Search the queue…"
       />
-    </>
+    </Stack>
   );
 }

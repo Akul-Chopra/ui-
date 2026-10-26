@@ -4,6 +4,7 @@ import { AccountBalance, PlaylistAddCheck } from '@mui/icons-material';
 import { PageHeader } from '@/components/PageHeader';
 import { DataTable, type Column } from '@/components/DataTable';
 import { SanctionOrderStatusChip } from '@/components/NgpsStatusChip';
+import { BeneficiaryCell, BENEFICIARY_HEADER } from '@/components/BeneficiaryCell';
 import { ngpsSanctionOrdersApi } from '@/api/endpoints';
 import type { SanctionOrderListItem } from '@/api/types';
 import { compactCurrency, date, dateTime } from '@/lib/format';
@@ -14,6 +15,7 @@ const columns: Column<SanctionOrderListItem>[] = [
   {
     key: 'sanctionOrderNo',
     header: 'Sanction Order',
+    width: '20%',
     render: (o) => (
       <Stack>
         <Typography variant="body2" fontWeight={600}>
@@ -26,14 +28,34 @@ const columns: Column<SanctionOrderListItem>[] = [
       </Stack>
     ),
   },
-  { key: 'totalBeneficiaries', header: 'Beneficiaries', align: 'right' },
-  { key: 'totalAmount', header: 'Amount', align: 'right', render: (o) => compactCurrency(o.totalAmount) },
+  {
+    key: 'beneficiary',
+    header: BENEFICIARY_HEADER,
+    width: '26%',
+    render: (o) => (
+      <Stack>
+        <BeneficiaryCell
+          beneficiaryName={o.beneficiaryName}
+          vendorName={o.vendorName}
+          accountNumberMasked={o.accountNumberMasked}
+          ifsc={o.ifsc}
+        />
+        {o.totalBeneficiaries > 1 && (
+          <Typography variant="caption" color="text.secondary">
+            +{o.totalBeneficiaries - 1} more
+          </Typography>
+        )}
+      </Stack>
+    ),
+  },
+  { key: 'totalAmount', header: 'Amount', align: 'right', width: '12%', render: (o) => compactCurrency(o.totalAmount) },
   {
     key: 'state',
     header: 'Status',
+    width: '22%',
     render: (o) => (
-      <Stack spacing={0.25}>
-        <SanctionOrderStatusChip state={o.state} code={o.ngpsResponseCode} text={o.ngpsStatusText} />
+      <Stack spacing={0.25} alignItems="flex-start">
+        <SanctionOrderStatusChip uniform state={o.state} code={o.ngpsResponseCode} text={o.ngpsStatusText} />
         {o.ngpsPaymentOrderId && (
           <Typography variant="caption" color="text.secondary">
             PO {o.ngpsPaymentOrderId}
@@ -43,24 +65,9 @@ const columns: Column<SanctionOrderListItem>[] = [
     ),
   },
   {
-    key: 'results',
-    header: 'Paid / Failed',
-    align: 'right',
-    render: (o) => (
-      <Typography variant="body2">
-        <Typography component="span" color="success.main" fontWeight={600}>
-          {o.paidCount}
-        </Typography>{' '}
-        /{' '}
-        <Typography component="span" color={o.failedCount > 0 ? 'error.main' : 'text.secondary'} fontWeight={600}>
-          {o.failedCount}
-        </Typography>
-      </Typography>
-    ),
-  },
-  {
     key: 'submitted',
     header: 'Sent',
+    width: '20%',
     render: (o) => (
       <Stack>
         <Typography variant="body2">{o.submittedByName || '—'}</Typography>
@@ -80,8 +87,8 @@ export function SanctionOrdersPage() {
   return (
     <>
       <PageHeader
-        title="NGPS Sanction Orders"
-        subtitle="Orders sent to NGPS, their signing and bank progress, and the per-vendor payment results"
+        title="Sanction Orders"
+        subtitle="Sent Sanction Orders, their signing and bank progress, and payment results"
         icon={<AccountBalance />}
         actions={
           can(Permissions.paymentNgpsPrepare) ? (

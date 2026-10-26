@@ -7,7 +7,7 @@ import { StatusChip } from '@/components/StatusChip';
  */
 const PROGRESS_LABELS: Record<number, string> = {
   10: 'Received',
-  20: 'Locked',
+  20: 'Sanction Order Processed', // NGPS "Locked"
   25: 'Removal requested',
   30: 'Payment Order created',
   35: 'Re-signing requested',
@@ -43,10 +43,23 @@ export function sanctionOrderStatus({ state, code, text }: StatusInput): { label
   if (state === 'Cancelled') return { label: 'Cancelled', tone: 'neutral' };
   if (state === 'Pending') return { label: 'Pending', tone: 'warning' };
   if (code != null) return { label: PROGRESS_LABELS[code] ?? text ?? 'In progress', tone: progressTone(code) };
-  return state === 'Completed' ? { label: 'Completed', tone: 'success' } : { label: 'Accepted', tone: 'info' };
+  return state === 'Completed' ? { label: 'Completed', tone: 'success' } : { label: 'Send for Processing', tone: 'info' }; // state Accepted
 }
 
-export function SanctionOrderStatusChip(props: StatusInput) {
+/** Wide enough for the longest label ("Sanction Order Processed") on one line. */
+const UNIFORM_WIDTH = 200;
+
+/**
+ * The order's status chip. `uniform` gives every chip the same width (label centred, one line),
+ * so a column of them lines up in a table.
+ */
+export function SanctionOrderStatusChip({ uniform, ...props }: StatusInput & { uniform?: boolean }) {
   const { label, tone } = sanctionOrderStatus(props);
-  return <StatusChip status={label} tone={tone} />;
+  return (
+    <StatusChip
+      status={label}
+      tone={tone}
+      sx={uniform ? { width: UNIFORM_WIDTH, maxWidth: '100%', '& .MuiChip-label': { textAlign: 'center' } } : undefined}
+    />
+  );
 }

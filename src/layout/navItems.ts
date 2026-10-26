@@ -63,20 +63,7 @@ export const navSections: NavSection[] = [
     items: [
       { label: 'Invoices', route: '/invoices', icon: 'ReceiptLong', permissions: [Permissions.invoiceView] },
       {
-        label: 'Payment Queue',
-        route: '/finance/queue',
-        icon: 'Payments',
-        permissions: [Permissions.paymentQueueView],
-      },
-      {
-        label: 'Record Payment',
-        route: '/finance/record-payment',
-        icon: 'PriceCheck',
-        permissions: [Permissions.paymentRecord],
-        hideForVendor: true,
-      },
-      {
-        label: 'Prepare NGPS Order',
+        label: 'Prepare Sanction Order',
         route: '/finance/ngps/prepare',
         icon: 'PlaylistAddCheck',
         permissions: [Permissions.paymentNgpsPrepare],
@@ -84,7 +71,7 @@ export const navSections: NavSection[] = [
         ngpsSignatory: true,
       },
       {
-        label: 'NGPS Sanction Orders',
+        label: 'Sanction Orders',
         route: '/finance/ngps/sanction-orders',
         icon: 'AccountBalance',
         permissions: [Permissions.paymentNgpsPrepare],
@@ -92,11 +79,12 @@ export const navSections: NavSection[] = [
         ngpsSignatory: true,
       },
       {
-        label: 'Pay via NGPS',
+        label: 'Process Payment Order',
         // Never routed to; it only gives the item a unique key and a path that is never "active".
         route: '/external/ngps-payment',
         icon: 'OpenInNew',
-        permissions: [Permissions.paymentRecord],
+        // Shown to officers linked to an NGPS user (see `ngpsSso`), not by permission.
+        permissions: [],
         hideForVendor: true,
         ngpsSso: true,
       },

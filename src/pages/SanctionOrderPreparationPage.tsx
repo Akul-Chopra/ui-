@@ -6,6 +6,7 @@ import { PlaylistAddCheck, Send, Warning } from '@mui/icons-material';
 import { PageHeader } from '@/components/PageHeader';
 import { DataTable, type Column } from '@/components/DataTable';
 import { StatusChip } from '@/components/StatusChip';
+import { BeneficiaryCell, BENEFICIARY_HEADER } from '@/components/BeneficiaryCell';
 import { SanctionOrderSubmitDialog } from '@/components/SanctionOrderSubmitDialog';
 import { ngpsSanctionOrdersApi } from '@/api/endpoints';
 import { errorMessage } from '@/api/client';
@@ -72,14 +73,14 @@ export function SanctionOrderPreparationPage() {
     },
     {
       key: 'beneficiary',
-      header: 'Beneficiary',
+      header: BENEFICIARY_HEADER,
       render: (c) => (
-        <Stack>
-          <Typography variant="body2">{c.beneficiaryName || '—'}</Typography>
-          <Typography variant="caption" color="text.secondary">
-            {c.accountNumberMasked || 'No bank account'} · {c.ifsc || '—'}
-          </Typography>
-        </Stack>
+        <BeneficiaryCell
+          beneficiaryName={c.beneficiaryName}
+          vendorName={c.vendorName}
+          accountNumberMasked={c.accountNumberMasked}
+          ifsc={c.ifsc}
+        />
       ),
     },
     { key: 'departmentName', header: 'Department' },
@@ -117,8 +118,8 @@ export function SanctionOrderPreparationPage() {
   return (
     <>
       <PageHeader
-        title="Prepare NGPS Sanction Order"
-        subtitle="Select finance-settled invoices and push them to NGPS as one Sanction Order for signing and payment"
+        title="Prepare Sanction Order"
+        subtitle="Select approved invoices for payment processing."
         icon={<PlaylistAddCheck />}
         actions={
           <Button variant="outlined" onClick={() => navigate('/finance/ngps/sanction-orders')}>
@@ -154,14 +155,6 @@ export function SanctionOrderPreparationPage() {
           Your VPS account is not linked to an NGPS Maker or Checker. Ask the administrator to set your NGPS User Key.
         </Alert>
       )}
-      {s?.isTenantConfigured && (
-        <Typography variant="caption" color="text.secondary" component="div" sx={{ mb: 1.5 }}>
-          NGPS Portal {s.portalId} · Scheme {s.schemeId} · Category {s.categoryId}/{s.subCategoryId} · District{' '}
-          {s.districtId} · Demography {s.demographyId} · Frequency {s.frequencyValue ?? '—'} · up to{' '}
-          {s.maxBeneficiariesPerOrder} beneficiaries per order · one vendor once per order
-        </Typography>
-      )}
-
       <Paper sx={{ p: 2, mb: 2 }}>
         <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems={{ sm: 'center' }} justifyContent="space-between">
           <Box>

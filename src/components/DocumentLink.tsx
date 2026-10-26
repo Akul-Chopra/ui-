@@ -9,7 +9,7 @@ const ROUTE: Record<DocumentType, string> = {
   Contract: '/contracts',
   WorkOrder: '/work-orders',
   Invoice: '/invoices',
-  Payment: '/finance/queue',
+  Payment: '/reports?tab=payment-queue',
 };
 
 /**

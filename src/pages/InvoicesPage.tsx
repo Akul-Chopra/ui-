@@ -34,8 +34,8 @@ import Grid from '@mui/material/Grid2';
 import { PageHeader } from '@/components/PageHeader';
 import { DataTable, type Column } from '@/components/DataTable';
 import { StatusChip } from '@/components/StatusChip';
-import { DocumentTimeline } from '@/components/Timeline';
-import { WorkflowProgress } from '@/components/WorkflowProgress';
+import { SanctionOrderStatusChip } from '@/components/NgpsStatusChip';
+import { InvoiceActivityTimeline } from '@/components/InvoiceLifecycle';
 import { InvoiceReviewDialog } from '@/components/InvoiceReviewDialog';
 import { ResubmitInvoiceDialog } from '@/components/ResubmitInvoiceDialog';
 import { DocumentAttachments } from '@/components/DocumentAttachments';
@@ -96,10 +96,20 @@ function toInvoiceParams(f: AdvancedFilters) {
   };
 }
 
+/** An amount on one line, so a money column never wraps and its figures line up on the right. */
+function Money({ value, color, bold }: { value: string; color?: string; bold?: boolean }) {
+  return (
+    <Typography variant="body2" noWrap color={color} fontWeight={bold ? 600 : undefined}>
+      {value}
+    </Typography>
+  );
+}
+
 const columns: Column<InvoiceListItem>[] = [
   {
     key: 'invoiceNumber',
     header: 'Invoice',
+    width: '24%',
     render: (i) => (
       <Stack>
         <Typography variant="body2" fontWeight={600}>
@@ -111,31 +121,42 @@ const columns: Column<InvoiceListItem>[] = [
       </Stack>
     ),
   },
-  { key: 'invoiceType', header: 'Type', render: (i) => <Chip label={i.invoiceType} size="small" variant="outlined" /> },
-  { key: 'grossAmount', header: 'Gross', align: 'right', render: (i) => compactCurrency(i.grossAmount) },
+  {
+    key: 'invoiceType',
+    header: 'Type',
+    width: '9%',
+    render: (i) => <Chip label={i.invoiceType} size="small" variant="outlined" />,
+  },
+  {
+    key: 'grossAmount',
+    header: 'Gross',
+    align: 'right',
+    width: '11%',
+    render: (i) => <Money value={compactCurrency(i.grossAmount)} />,
+  },
   {
     key: 'approvedDeductionAmount',
     header: 'Deduction',
     align: 'right',
+    width: '11%',
     render: (i) =>
       i.approvedDeductionAmount > 0 ? (
-        <Typography variant="body2" color="error.main">
-          −{compactCurrency(i.approvedDeductionAmount)}
-        </Typography>
+        <Money value={compactCurrency(i.approvedDeductionAmount)} color="error.main" />
       ) : (
-        '—'
+        <Money value="—" color="text.disabled" />
       ),
   },
   {
     key: 'netPayableAmount',
     header: 'Net Payable',
     align: 'right',
-    render: (i) => <Typography variant="body2" fontWeight={600}>{compactCurrency(i.netPayableAmount)}</Typography>,
+    width: '12%',
+    render: (i) => <Money value={compactCurrency(i.netPayableAmount)} bold />,
   },
-  { key: 'ageInDays', header: 'Age', align: 'right', render: (i) => (i.ageInDays > 0 ? `${i.ageInDays}d` : '—') },
   {
     key: 'pendingWith',
     header: 'Pending with',
+    width: '13%',
     render: (i) =>
       i.pendingWith ? (
         <Chip label={i.pendingWith} size="small" color="warning" variant="outlined" />
@@ -145,7 +166,24 @@ const columns: Column<InvoiceListItem>[] = [
         </Typography>
       ),
   },
-  { key: 'status', header: 'Status', render: (i) => <StatusChip status={i.status} /> },
+  {
+    key: 'status',
+    header: 'Status',
+    width: '20%',
+    // Once sent in a Sanction Order the invoice shows that order's status, exactly as the Sanction
+    // Orders screen does; before that, its own status.
+    render: (i) =>
+      i.sanctionOrderState ? (
+        <SanctionOrderStatusChip
+          uniform
+          state={i.sanctionOrderState}
+          code={i.sanctionOrderResponseCode}
+          text={i.sanctionOrderStatusText}
+        />
+      ) : (
+        <StatusChip status={i.status} sx={{ width: 200, maxWidth: '100%' }} />
+      ),
+  },
 ];
 
 export function InvoicesPage() {
@@ -508,9 +546,6 @@ export function InvoiceDetailPage() {
               ) : (payments.data ?? []).length === 0 ? (
                 <Alert severity="info">
                   No payment has been recorded for this invoice yet.
-                  {['FinanceApproved', 'PendingPayment', 'PartiallyPaid'].includes(data.status)
-                    ? ' Enter it from the “Record Payment” screen (in the Payments menu).'
-                    : ' Payments can be recorded once finance has approved the invoice.'}
                 </Alert>
               ) : (
                 <Stack spacing={1.25}>
@@ -601,9 +636,9 @@ export function InvoiceDetailPage() {
           {/* ACTIVITY — where the invoice stands in its approval, then the full audit trail. */}
           {activeKey === 'activity' && (
             <Box sx={{ pt: 2 }}>
-              <WorkflowProgress entityType="Invoice" entityId={data.id} />
-              <Divider sx={{ my: 2.5 }} />
-              <DocumentTimeline entityName="Invoice" entityId={data.id} />
+              {/* One timeline: approval levels, then settlement → Sanction Order → Payment Order →
+                  disbursement → payment → UTR, each with its history; full audit list on demand. */}
+              <InvoiceActivityTimeline invoiceId={data.id} />
             </Box>
           )}
           </Box>

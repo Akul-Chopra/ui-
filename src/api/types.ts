@@ -623,6 +623,47 @@ export interface InvoiceListItem {
   ageInDays: number;
   pendingWithUserId?: string;
   pendingWith?: string;
+  /** Latest Sanction Order this invoice was sent in (officers only); drives the Status column. */
+  sanctionOrderState?: NgpsSanctionOrderState;
+  sanctionOrderResponseCode?: number;
+  sanctionOrderStatusText?: string;
+}
+
+/** An invoice's end-to-end lifecycle facts (officers only). Null = that stage has not happened. */
+export interface InvoiceLifecycle {
+  status: string;
+  submittedOn?: string;
+  technicalReviewedOn?: string;
+  financeReviewedOn?: string;
+  netPayableAmount: number;
+  paidAmount: number;
+  approvalStatus?: string;
+  approvalCompletedOn?: string;
+  approvalCurrentStep?: number;
+  approvalTotalSteps?: number;
+  pendingWith?: string;
+  adviceNumber?: string;
+  adviceDate?: string;
+  paymentNumber?: string;
+  paymentStatus?: string;
+  disbursedOn?: string;
+  paymentFailureReason?: string;
+  sanctionOrderId?: string;
+  sanctionOrderNo?: number;
+  sanctionOrderState?: NgpsSanctionOrderState;
+  sanctionOrderResponseCode?: number;
+  sanctionOrderStatusText?: string;
+  sanctionOrderSentOn?: string;
+  ngpsReferenceNo?: string;
+  paymentOrderId?: string;
+  paymentOrderSignedBy?: string;
+  paymentOrderSignedOn?: string;
+  lastCheckedOn?: string;
+  bankResultCode?: number;
+  bankName?: string;
+  bankProcessDate?: string;
+  bankFailureReason?: string;
+  utr?: string;
 }
 
 export interface InvoiceReviewContext {
@@ -739,16 +780,6 @@ export interface InvoicePayment {
   isManualEntry: boolean;
 }
 
-export interface RecordPaymentBody {
-  amount: number;
-  paymentMode: string;
-  referenceNumber: string;
-  instrumentDate?: string;
-  bankName?: string;
-  paymentDate: string;
-  remarks?: string;
-}
-
 // ---- Payments ------------------------------------------------------------
 
 export interface PaymentQueueItem {
@@ -766,6 +797,10 @@ export interface PaymentQueueItem {
   dueDate?: string;
   ageInDays: number;
   isBankVerified: boolean;
+  /** Vendor's primary bank account: holder, masked number, IFSC (empty when none). */
+  beneficiaryName: string;
+  accountNumberMasked: string;
+  ifsc: string;
   paymentAdviceId?: string;
   paymentStatus?: string;
 }
@@ -861,6 +896,11 @@ export interface SanctionOrderListItem {
   soType: number;
   totalAmount: number;
   totalBeneficiaries: number;
+  /** The first line's beneficiary; the others are on the order's page. */
+  beneficiaryName?: string;
+  vendorName?: string;
+  accountNumberMasked?: string;
+  ifsc?: string;
   state: NgpsSanctionOrderState;
   ngpsResponseCode?: number;
   ngpsStatusText?: string;

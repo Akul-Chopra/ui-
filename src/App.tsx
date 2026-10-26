@@ -20,8 +20,6 @@ import { ContractDetailPage } from '@/pages/ContractDetailPage';
 import { WorkOrdersPage } from '@/pages/WorkOrdersPage';
 import { WorkOrderDetailPage } from '@/pages/WorkOrderDetailPage';
 import { InvoicesPage, InvoiceDetailPage } from '@/pages/InvoicesPage';
-import { PaymentQueuePage } from '@/pages/PaymentQueuePage';
-import { RecordPaymentsPage } from '@/pages/RecordPaymentsPage';
 import { SanctionOrderPreparationPage } from '@/pages/SanctionOrderPreparationPage';
 import { SanctionOrdersPage } from '@/pages/SanctionOrdersPage';
 import { SanctionOrderDetailPage } from '@/pages/SanctionOrderDetailPage';
@@ -101,12 +99,12 @@ export function App() {
                     <Route path="/work-orders/:id" element={<WorkOrderDetailPage />} />
                     <Route path="/invoices" element={<InvoicesPage />} />
                     <Route path="/invoices/:id" element={<InvoiceDetailPage />} />
-                    <Route path="/finance/queue" element={<PaymentQueuePage />} />
-                    <Route path="/finance/record-payment" element={<RecordPaymentsPage />} />
+                    {/* Payment Queue is now the first Reports tab; old links land there. */}
+                    <Route path="/finance/queue" element={<Navigate to="/reports?tab=payment-queue" replace />} />
                     <Route path="/finance/ngps/prepare" element={<SanctionOrderPreparationPage />} />
                     <Route path="/finance/ngps/sanction-orders" element={<SanctionOrdersPage />} />
                     <Route path="/finance/ngps/sanction-orders/:id" element={<SanctionOrderDetailPage />} />
-                    <Route path="/payments" element={<PaymentQueuePage />} />
+                    <Route path="/payments" element={<Navigate to="/reports?tab=payment-queue" replace />} />
                     <Route path="/config/rules" element={<RuleEnginePage />} />
                     <Route path="/config/workflows" element={<WorkflowsPage />} />
                     <Route path="/config/masters" element={<MastersPage />} />

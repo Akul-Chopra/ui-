@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { Box, Typography, CircularProgress, Stack } from '@mui/material';
 import { motion } from 'framer-motion';
 import { auditApi } from '@/api/endpoints';
+import type { TimelineEvent } from '@/api/types';
 import { dateTime } from '@/lib/format';
 
 const TONE_COLOR: Record<string, string> = {
@@ -11,6 +12,42 @@ const TONE_COLOR: Record<string, string> = {
   danger: '#dc2626',
   neutral: '#94a3b8',
 };
+
+/**
+ * History events shown inside a stage of a progress rail: a small coloured dot per event with
+ * who, when and where it was recorded. The compact sibling of DocumentTimeline.
+ */
+export function StageEvents({ events }: { events: TimelineEvent[] }) {
+  if (events.length === 0) return null;
+  return (
+    <Stack spacing={0.75} sx={{ mt: 0.75 }}>
+      {events.map((e, i) => {
+        const color = TONE_COLOR[e.tone] ?? TONE_COLOR.neutral;
+        return (
+          <Stack key={i} direction="row" spacing={1} alignItems="flex-start">
+            <Box sx={{ width: 8, height: 8, borderRadius: '50%', bgcolor: color, mt: 0.75, flexShrink: 0 }} />
+            <Box sx={{ minWidth: 0 }}>
+              <Typography variant="caption" fontWeight={600} display="block" sx={{ color: 'text.primary' }}>
+                {e.title}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" display="block">
+                {e.userName ?? 'system'} · {dateTime(e.timestamp)} ·{' '}
+                <Box component="span" sx={{ color }}>
+                  {e.source}
+                </Box>
+              </Typography>
+              {e.remarks && (
+                <Typography variant="caption" color="text.secondary" display="block" sx={{ fontStyle: 'italic' }}>
+                  “{e.remarks}”
+                </Typography>
+              )}
+            </Box>
+          </Stack>
+        );
+      })}
+    </Stack>
+  );
+}
 
 /**
  * The per-document timeline. Renders the backend's merged audit + approval history as a
