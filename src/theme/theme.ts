@@ -156,11 +156,22 @@ export function buildTheme(mode: ThemeMode, brandPrimary?: string, brandSecondar
   });
 }
 
-/** Page-level CSS variables the plain-CSS rules in index.css consume. */
+/**
+ * Page-level CSS variables the plain-CSS rules in index.css and the public pages' backdrops
+ * consume. The NGPS look supplies its own (ngpsCssVars); these are the VPS look's values.
+ */
 export function themeCssVars(mode: ThemeMode): Record<string, string> {
+  const backdrops = {
+    // Sign-in and registration backdrop.
+    '--vps-auth-bg':
+      'radial-gradient(1200px 600px at 10% -10%, rgba(11,79,108,0.25), transparent), radial-gradient(1000px 500px at 110% 110%, rgba(1,186,239,0.2), transparent)',
+    // Landing page hero.
+    '--vps-home-hero-bg':
+      'radial-gradient(1200px 600px at 10% -10%, rgba(11,79,108,0.22), transparent), radial-gradient(1000px 500px at 110% 10%, rgba(1,186,239,0.18), transparent)',
+  };
   return mode === 'dark'
-    ? { '--vps-page-bg': '#1a1d21', '--vps-scrollbar': 'rgba(173,181,189,0.35)' }
-    : { '--vps-page-bg': '#f8f9fa', '--vps-scrollbar': 'rgba(33,37,41,0.2)' };
+    ? { '--vps-page-bg': '#1a1d21', '--vps-scrollbar': 'rgba(173,181,189,0.35)', ...backdrops }
+    : { '--vps-page-bg': '#f8f9fa', '--vps-scrollbar': 'rgba(33,37,41,0.2)', ...backdrops };
 }
 
 /**

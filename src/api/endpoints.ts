@@ -38,6 +38,8 @@ import type {
   SendTestSmsResult,
   SmsLogEntry,
   SmsSettings,
+  UiThemeMode,
+  UiThemeSettings,
   SanctionOrderDetail,
   SanctionOrderListItem,
   SanctionOrderPreview,
@@ -291,6 +293,15 @@ export const smsApi = {
     api.post<SendTestSmsResult>(`${V1}/config/sms/test`, body).then((r) => r.data),
   log: (take = 50) =>
     api.get<SmsLogEntry[]>(`${V1}/config/sms/log`, { params: { take } }).then((r) => r.data),
+};
+
+export const uiThemeApi = {
+  // Anonymous, so the sign-in page is themed too. A short timeout: the look must never hold
+  // the app back, and on any failure the client keeps its cached or default (VPS) look.
+  get: () => api.get<UiThemeSettings>(`${V1}/public/ui-theme`, { timeout: 3000 }).then((r) => r.data),
+  /** Super Admin only (checked by the API). A token sent as null reverts to its default. */
+  update: (mode: UiThemeMode, tokens?: Record<string, string | null>) =>
+    api.put(`${V1}/config/ui-theme`, { mode, tokens }).then((r) => r.data),
 };
 
 /** Advanced-search filters shared by the personal and org-wide approval inboxes. */

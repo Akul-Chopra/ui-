@@ -192,8 +192,7 @@ export function HomePage() {
       {/* Hero carousel */}
       <Box
         sx={{
-          background:
-            'radial-gradient(1200px 600px at 10% -10%, rgba(11,79,108,0.22), transparent), radial-gradient(1000px 500px at 110% 10%, rgba(1,186,239,0.18), transparent)',
+          background: 'var(--vps-home-hero-bg)', // set per look in App (themeCssVars / ngpsCssVars)
         }}
       >
         <Container maxWidth="lg" sx={{ py: { xs: 5, md: 8 } }}>

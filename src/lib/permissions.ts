@@ -48,6 +48,7 @@ export const Permissions = {
   masterView: 'master.view',
   masterManage: 'master.manage',
   smsManage: 'notification.sms.manage',
+  themeManage: 'appearance.theme.manage',
   workflowCreate: 'workflow.create',
   workflowUpdate: 'workflow.update',
   reportView: 'report.view',

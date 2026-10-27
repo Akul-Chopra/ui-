@@ -22,9 +22,21 @@ const columns: Column<SanctionOrderListItem>[] = [
           {o.sanctionOrderNo}
           {o.soType === 2 ? ' · Re-process' : ''}
         </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {o.description || '—'} · {date(o.sanctionDate)}
+        <Typography variant="caption" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+          Sanctioned {date(o.sanctionDate)}
         </Typography>
+        {/* Optional on the Sanction Order; shown only when there is one, never as a placeholder dash. */}
+        {o.description && (
+          // Two lines at most: a long description must not stretch the table sideways.
+          <Typography
+            variant="caption"
+            color="text.secondary"
+            title={o.description}
+            sx={{ display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', wordBreak: 'break-word' }}
+          >
+            {o.description}
+          </Typography>
+        )}
       </Stack>
     ),
   },

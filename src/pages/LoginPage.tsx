@@ -120,8 +120,7 @@ export function LoginPage() {
         display: 'grid',
         placeItems: 'center',
         p: 2,
-        background:
-          'radial-gradient(1200px 600px at 10% -10%, rgba(11,79,108,0.25), transparent), radial-gradient(1000px 500px at 110% 110%, rgba(1,186,239,0.2), transparent)',
+        background: 'var(--vps-auth-bg)', // set per look in App (themeCssVars / ngpsCssVars)
       }}
     >
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35 }}>

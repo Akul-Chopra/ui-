@@ -19,7 +19,9 @@ export function PageHeader({
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
+      {/* The class is a styling hook for the NGPS look (ngpsTheme.ts); the VPS look has no rule for it. */}
       <Stack
+        className="vps-page-header"
         direction="row"
         alignItems="center"
         justifyContent="space-between"

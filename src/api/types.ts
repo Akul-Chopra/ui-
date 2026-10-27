@@ -1459,3 +1459,13 @@ export interface SendTestSmsResult {
   message: string;
   renderedText?: string | null;
 }
+
+/** The application look for every user: VPS (Mode A) or the NGPS-inspired Mode B. */
+export type UiThemeMode = 'VPS' | 'NGPS';
+
+/** GET public/ui-theme. Tokens hold only valid, known keys; the client defaults the rest. */
+export interface UiThemeSettings {
+  mode: UiThemeMode;
+  tokens: Record<string, string>;
+  modifiedOn?: string | null;
+}

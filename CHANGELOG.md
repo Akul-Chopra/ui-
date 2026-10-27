@@ -8,6 +8,18 @@ the change.
 
 ## Unreleased
 
+- Application theme: the Super Admin can switch every user between the VPS look (unchanged) and an
+  NGPS-inspired look (navy + saffron, Noto Sans, navy table heads, dark-navy sidebar) from Administration →
+  Appearance. Mode B is one MUI theme (`src/theme/ngpsTheme.ts`) built from DB tokens with built-in defaults
+  (`src/theme/uiTheme.ts`); the look is cached in `localStorage` (`vps.uiTheme`) so a refresh does not flicker,
+  re-checked every 10 minutes (`src/lib/useUiThemeSync.ts`), and falls back to VPS on any failure. Sign-in,
+  registration and home backdrops now come from CSS variables (same values in the VPS look). Playbook in the
+  VPS repository: `docs/playbooks/ngps-theme.md`.
+- Layout fixes: Sanction Orders list shows "Sanctioned <date>" and the description only when there is one
+  (no "—" placeholder); Contracts list has set column widths and the expiry date on one line; Reports →
+  Payment queue columns size to their content with tighter padding so all nine fit at desktop width, amounts on
+  one line and the vendor code under the invoice number; Admin page Organisation and Appearance rows aligned.
+
 - Invoice detail → Activity: the approval rail now continues past the last approval level with the invoice's
   lifecycle — Finance settlement, Sanction Order, Payment Order, Disbursement, Payment status, UTR — drawn like
   the approval levels (marker, connector, title, status chip, details, date). `InvoiceLifecycleStages`

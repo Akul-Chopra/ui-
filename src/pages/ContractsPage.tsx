@@ -86,6 +86,7 @@ const columns: Column<ContractListItem>[] = [
   {
     key: 'contractNumber',
     header: 'Contract',
+    width: '28%',
     render: (c) => (
       <Stack>
         <Typography variant="body2" fontWeight={600}>
@@ -98,10 +99,11 @@ const columns: Column<ContractListItem>[] = [
       </Stack>
     ),
   },
-  { key: 'departmentName', header: 'Department', render: (c) => c.departmentName ?? '—' },
+  { key: 'departmentName', header: 'Department', width: '14%', render: (c) => c.departmentName ?? '—' },
   {
     key: 'value',
     header: 'Value / Committed',
+    width: '18%',
     render: (c) => {
       const pct = c.contractValue > 0 ? (c.committedValue / c.contractValue) * 100 : 0;
       return (
@@ -121,9 +123,13 @@ const columns: Column<ContractListItem>[] = [
   {
     key: 'endDate',
     header: 'Expiry',
+    width: '13%',
     render: (c) => (
       <Stack direction="row" spacing={0.5} alignItems="center">
-        <span>{date(c.endDate)}</span>
+        {/* One line: "26 Oct 2027", never split across rows. */}
+        <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
+          {date(c.endDate)}
+        </Typography>
         {c.daysToExpiry >= 0 && c.daysToExpiry <= 90 && (
           <Chip
             icon={<Warning fontSize="small" />}
@@ -138,6 +144,7 @@ const columns: Column<ContractListItem>[] = [
   {
     key: 'pendingWith',
     header: 'Pending with',
+    width: '12%',
     render: (c) =>
       c.pendingWith ? (
         <Chip label={c.pendingWith} size="small" color="warning" variant="outlined" />
@@ -147,7 +154,7 @@ const columns: Column<ContractListItem>[] = [
         </Typography>
       ),
   },
-  { key: 'status', header: 'Status', render: (c) => <StatusChip status={c.status} /> },
+  { key: 'status', header: 'Status', width: '11%', render: (c) => <StatusChip status={c.status} /> },
   { key: 'actions', header: '', align: 'right', render: (c) => <SubmitContractButton contract={c} /> },
 ];
 

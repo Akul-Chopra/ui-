@@ -40,6 +40,7 @@ import {
   Typography,
 } from '@mui/material';
 import { PageHeader } from '@/components/PageHeader';
+import { UiThemeSettingCard } from '@/components/UiThemeSettingCard';
 import {
   adminApi,
   lookupsApi,
@@ -92,8 +93,10 @@ export function AdminPage() {
       {isPlatformAdmin && (
         <Card variant="outlined" sx={{ mb: 2 }}>
           <CardContent sx={{ py: 1.5 }}>
-            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'center' }}>
-              <Typography variant="subtitle2" sx={{ minWidth: 120 }}>
+            {/* Top-aligned so the field (not field + helper text) lines up with the label and the
+                button; the label column matches the Appearance card below. */}
+            <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2} alignItems={{ sm: 'flex-start' }}>
+              <Typography variant="subtitle2" sx={{ width: { sm: 140 }, flexShrink: 0, lineHeight: { sm: '40px' } }}>
                 Organisation
               </Typography>
               <TextField
@@ -126,6 +129,8 @@ export function AdminPage() {
           </CardContent>
         </Card>
       )}
+
+      <UiThemeSettingCard />
 
       {createOrgOpen && (
         <CreateTenantDialog

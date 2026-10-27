@@ -154,7 +154,8 @@ export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: ()
         })}
       </Box>
 
-      <Box sx={{ p: 2 }}>
+      {/* The class is a styling hook for the NGPS look (ngpsTheme.ts); the VPS look has no rule for it. */}
+      <Box className="vps-sidebar-footer" sx={{ p: 2 }}>
         <Typography variant="caption" color="text.secondary">
           National eGovernance Division
         </Typography>
