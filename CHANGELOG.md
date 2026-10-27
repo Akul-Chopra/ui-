@@ -8,6 +8,10 @@ the change.
 
 ## Unreleased
 
+- Sidebar: the menu button now hides and shows the sidebar on desktop widths too (the desktop drawer was
+  `permanent`, which ignores open/close; it is now `persistent` and its space closes with it). Phone widths
+  unchanged.
+
 - Application theme: the Super Admin can switch every user between the VPS look (unchanged) and an
   NGPS-inspired look (navy + saffron, Noto Sans, navy table heads, dark-navy sidebar) from Administration →
   Appearance. Mode B is one MUI theme (`src/theme/ngpsTheme.ts`) built from DB tokens with built-in defaults

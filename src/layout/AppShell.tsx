@@ -26,7 +26,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
       <Sidebar
         open={sidebarOpen}
         onClose={() => dispatch(setSidebar(false))}
-        variant={isDesktop ? 'permanent' : 'temporary'}
+        // Persistent, not permanent: a permanent drawer ignores `open`, so the menu button could
+        // not hide the sidebar on desktop.
+        variant={isDesktop ? 'persistent' : 'temporary'}
       />
       <Box
         component="main"

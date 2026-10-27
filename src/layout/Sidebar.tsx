@@ -56,7 +56,7 @@ const ICONS: Record<string, React.ReactNode> = {
 
 export const SIDEBAR_WIDTH = 260;
 
-export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: () => void; variant: 'permanent' | 'temporary' }) {
+export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: () => void; variant: 'persistent' | 'temporary' }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { can, user, isVendor } = useAuth();
@@ -171,7 +171,9 @@ export function Sidebar({ open, onClose, variant }: { open: boolean; onClose: ()
         onClose={onClose}
         ModalProps={{ keepMounted: true }}
         sx={{
-          width: variant === 'permanent' ? SIDEBAR_WIDTH : 0,
+          // On desktop the drawer takes its width only while open, so closing it widens the page.
+          width: variant === 'persistent' && open ? SIDEBAR_WIDTH : 0,
+          transition: (t) => t.transitions.create('width'),
           flexShrink: 0,
           '& .MuiDrawer-paper': { width: SIDEBAR_WIDTH, boxSizing: 'border-box' },
         }}
