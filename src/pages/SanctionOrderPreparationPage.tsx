@@ -155,9 +155,9 @@ export function SanctionOrderPreparationPage() {
           Your VPS account is not linked to an NGPS Maker or Checker. Ask the administrator to set your NGPS User Key.
         </Alert>
       )}
-      <Paper sx={{ p: 2, mb: 2 }}>
-        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5} alignItems={{ sm: 'center' }} justifyContent="space-between">
-          <Box>
+      <Paper sx={{ px: 2, py: 1.5, mb: 2 }}>
+        <Stack direction={{ xs: 'column', sm: 'row' }} spacing={{ xs: 1, sm: 2 }} alignItems={{ sm: 'center' }} justifyContent="space-between">
+          <Box sx={{ flex: 1, minWidth: 0 }}>
             <Typography variant="subtitle2">
               {selected.size} selected · {currency(selectedTotal)}
             </Typography>
@@ -167,7 +167,7 @@ export function SanctionOrderPreparationPage() {
                 : 'The order is sent to NGPS under your NGPS user. Payments move to Processing until NGPS returns the bank result.'}
             </Typography>
           </Box>
-          <Stack direction="row" spacing={1}>
+          <Stack direction="row" spacing={1} sx={{ flexShrink: 0, '& .MuiButton-root': { whiteSpace: 'nowrap' } }}>
             <Button disabled={selected.size === 0} onClick={() => setSelected(new Map())}>
               Clear
             </Button>
