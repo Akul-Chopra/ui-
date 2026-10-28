@@ -60,14 +60,21 @@ export function SanctionOrderPreparationPage() {
     {
       key: 'invoiceNumber',
       header: 'Invoice',
+      // Vendor name and code, and the department, under the invoice number: the Beneficiary/Vendor column
+      // shows the bank account holder, which can differ from the vendor. Wraps, so the grid stays narrow.
       render: (c) => (
         <Stack>
-          <Typography variant="body2" fontWeight={600}>
+          <Typography variant="body2" fontWeight={600} sx={{ whiteSpace: 'nowrap' }}>
             {c.invoiceNumber}
           </Typography>
           <Typography variant="caption" color="text.secondary">
             {c.vendorName} · {c.vendorCode}
           </Typography>
+          {c.departmentName && (
+            <Typography variant="caption" color="text.secondary">
+              {c.departmentName}
+            </Typography>
+          )}
         </Stack>
       ),
     },
@@ -83,35 +90,37 @@ export function SanctionOrderPreparationPage() {
         />
       ),
     },
-    { key: 'departmentName', header: 'Department' },
-    { key: 'amount', header: 'Amount', align: 'right', render: (c) => currency(c.amount) },
     {
-      key: 'payment',
-      header: 'Payment',
-      render: (c) => (
-        <Stack direction="row" spacing={0.5} alignItems="center">
-          {c.paymentStatus ? (
-            <StatusChip status={c.paymentStatus} />
-          ) : (
-            <Chip label="Advice on submit" size="small" variant="outlined" />
-          )}
-          {c.isReprocess && <Chip label="Re-send" size="small" color="warning" />}
-        </Stack>
-      ),
+      key: 'amount',
+      header: 'Amount',
+      align: 'right',
+      render: (c) => <Box sx={{ whiteSpace: 'nowrap' }}>{currency(c.amount)}</Box>,
     },
     {
-      key: 'issues',
-      header: 'Checks',
-      render: (c) =>
-        c.issues.length === 0 ? (
-          <Typography variant="caption" color="success.main">
-            Ready
-          </Typography>
-        ) : (
-          <Tooltip title={c.issues.join(' ')}>
-            <Chip icon={<Warning fontSize="small" />} label={`${c.issues.length} issue(s)`} size="small" color="error" />
-          </Tooltip>
-        ),
+      // Payment state and the pre-checks in one column: what happens on send, and whether it can go.
+      key: 'status',
+      header: 'Status',
+      render: (c) => (
+        <Stack spacing={0.5} alignItems="flex-start">
+          <Stack direction="row" spacing={0.5} alignItems="center">
+            {c.paymentStatus ? (
+              <StatusChip status={c.paymentStatus} />
+            ) : (
+              <Chip label="Advice on submit" size="small" variant="outlined" />
+            )}
+            {c.isReprocess && <Chip label="Re-send" size="small" color="warning" />}
+          </Stack>
+          {c.issues.length === 0 ? (
+            <Typography variant="caption" color="success.main">
+              Ready to send
+            </Typography>
+          ) : (
+            <Tooltip title={c.issues.join(' ')}>
+              <Chip icon={<Warning fontSize="small" />} label={`${c.issues.length} issue(s)`} size="small" color="error" />
+            </Tooltip>
+          )}
+        </Stack>
+      ),
     },
   ];
 
