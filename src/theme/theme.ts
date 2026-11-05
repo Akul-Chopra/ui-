@@ -8,7 +8,8 @@ export type ThemeMode = 'light' | 'dark';
  * https://doc.ux4g.gov.in — palette, native font stack, 16px base, ~6px radius, WCAG 2.1 AA.
  */
 const UX4G = {
-  primary: '#0d6efd',
+  // primary: '#0d6efd',
+  primary: '#000080',
   secondary: '#6c757d',
   success: '#198754',
   danger: '#dc3545',

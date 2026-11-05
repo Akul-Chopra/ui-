@@ -8,6 +8,11 @@ the change.
 
 ## Unreleased
 
+- Home page: the "payment journey" section now follows the BRD flow in eight colour-coded stages (vendor
+  registration, contract creation and approval, work order creation and approval, invoice submission, review /
+  compliance / sanction, payment). Each stage lists its stakeholders, and an animation ticks each one green in
+  turn ("Verified", "Approved", "Sanctioned"…) while the section is on screen; reduced motion shows it completed.
+
 - Sidebar: the menu button now hides and shows the sidebar on desktop widths too (the desktop drawer was
   `permanent`, which ignores open/close; it is now `persistent` and its space closes with it). Phone widths
   unchanged.
